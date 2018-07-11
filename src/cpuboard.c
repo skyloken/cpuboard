@@ -242,6 +242,8 @@ static void Bbc(char obj2, Cpub *cpub) {
 
 static void Ssm_Rsm(char obj2, Cpub *cpub) {
     Bit x;
+    Bit y;
+
     switch (obj2) {
         case '0':
             /* SRA ACC */
@@ -252,78 +254,278 @@ static void Ssm_Rsm(char obj2, Cpub *cpub) {
 
             cpub->acc = cpub->acc >> 1;
             if (x == 0) {
-                cpub->acc &= ~0x80; // b7 = 0
+                cpub->acc &= ~0x80;     // b7 = 0
             } else {
-                cpub->acc |= 0x80;  // b7 = 1
+                cpub->acc |= 0x80;      // b7 = 1
             }
 
             if(cpub->acc == 0x00){
-                cpub->zf = 1;       // ZF = 1
+                cpub->zf = 1;           // ZF = 1
             }
             cpub->nf = (cpub->acc >> 7) & 1;    // NF = b7
+
             break;
 
         case '8':
             /* SRA IX */
 
-            x = (cpub->ix >> 7) & 1;   // b7を取り出す
-            cpub->cf = cpub->ix & 1;   // CF = b0
+            x = (cpub->ix >> 7) & 1;    // b7を取り出す
+            cpub->cf = cpub->ix & 1;    // CF = b0
             cpub->vf = 0;               // VF = 0
 
-            cpub->ix = cpub->ix >> 1;
+            cpub->ix = cpub->ix >> 1;   //右シフト
             if (x == 0) {
-                cpub->ix &= ~0x80; // b7 = 0
+                cpub->ix &= ~0x80;      // b7 = 0
             } else {
-                cpub->ix |= 0x80;  // b7 = 1
+                cpub->ix |= 0x80;       // b7 = 1
             }
 
             if(cpub->ix == 0x00){
-                cpub->zf = 1;       // ZF = 1
+                cpub->zf = 1;           // ZF = 1
             }
             cpub->nf = (cpub->ix >> 7) & 1;    // NF = b7
+
             break;
 
         case '1':
             /* SLA ACC */
+            cpub->cf = (cpub->acc >> 7) & 1; // CF = b7
+
+            cpub->acc = cpub->acc << 1;     // 左シフト
+            cpub->acc &= ~0x80;             // b0 = 0
+
+            if (cpub->cf != cpub->(cpub->acc >> 7) & 1){
+                cpub->vf = 1;               // 異符号ならVF = 1
+            }
+            if(cpub->acc == 0x00){
+                cpub->zf = 1;               // ZF = 1
+            }
+            cpub->nf = (cpub->acc >> 7) & 1;    // NF = b7
+
             break;
         case '9':
             /* SLA IX */
+            cpub->cf = (cpub->ix >> 7) & 1; // CF = b7
+
+            cpub->ix = cpub->ix << 1;     // 左シフト
+            cpub->ix &= ~0x80;             // b0 = 0
+
+            if (cpub->cf != cpub->(cpub->ix >> 7) & 1){
+                cpub->vf = 1;               // 異符号ならVF = 1
+            }
+            if(cpub->ix == 0x00){
+                cpub->zf = 1;               // ZF = 1
+            }
+            cpub->nf = (cpub->ix >> 7) & 1;    // NF = b7
+
             break;
         case '2':
             /* SRL ACC */
+            cpub->cf = cpub->acc & 1;        // CF = b0
+            cpub->vf = 0;                   // VF = 0
+
+
+            cpub->acc = cpub->acc >> 1;     // 右シフト
+            cpub->acc &= ~0x80;             // b7 = 0
+
+            if(cpub->acc == 0x00){
+                cpub->zf = 1;               // ZF = 1
+            }
+            cpub->nf = (cpub->acc >> 7) & 1;    // NF = b7
+
             break;
         case 'A':
             /* SRL IX */
+            cpub->cf = cpub-> & 1;        // CF = b0
+            cpub->vf = 0;                   // VF = 0
+
+
+            cpub->ix = cpub->ix >> 1;     // 右シフト
+            cpub->ix &= ~0x80;             // b7 = 0
+
+            if(cpub->ix == 0x00){
+                cpub->zf = 1;               // ZF = 1
+            }
+            cpub->nf = (cpub->ix >> 7) & 1;    // NF = b7
+
             break;
         case '3':
             /* SLL ACC */
+            cpub->cf = (cpub->acc >> 7) & 1; // CF = b7
+            cpub->vf = 0;                   // VF = 0
+
+            cpub->acc = cpub->acc << 1;     // 左シフト
+            cpub->acc &= ~0x80;             // b0 = 0
+
+            if(cpub->acc == 0x00){
+                cpub->zf = 1;               // ZF = 1
+            }
+            cpub->nf = (cpub->acc >> 7) & 1;    // NF = b7
+
             break;
         case 'B':
             /* SLL IX */
+            cpub->cf = (cpub->ix >> 7) & 1; // CF = b7
+            cpub->vf = 0;                   // VF = 0
+
+            cpub->ix = cpub->ix << 1;     // 左シフト
+            cpub->ix &= ~0x80;             // b0 = 0
+
+            if(cpub->ix == 0x00){
+                cpub->zf = 1;               // ZF = 1
+            }
+            cpub->nf = (cpub->ix >> 7) & 1;    // NF = b7
+
             break;
         case '4':
             /* RRA ACC */
+            x = cpub->cf;
+            cpub->cf = cpub->acc & 1;        // CF = b0
+            cpub->vf = 0;                   // VF = 0
+
+            cpub->acc = cpub->acc >> 1;
+            if (x == 0) {
+                cpub->acc &= ~0x80;      // b7 = 0
+            } else {
+                cpub->acc |= 0x80;       // b7 = 1
+            }
+
+            if(cpub->acc == 0x00){
+                cpub->zf = 1;               // ZF = 1
+            }
+            cpub->nf = (cpub->acc >> 7) & 1;    // NF = b7
+
             break;
         case 'C':
             /* RRA IX */
+            x = cpub->cf;
+            cpub->cf = cpub->ix & 1;        // CF = b0
+            cpub->vf = 0;                   // VF = 0
+
+            cpub->ix = cpub->ix >> 1;
+            if (x == 0) {
+                cpub->ix &= ~0x80;      // b7 = 0
+            } else {
+                cpub->ix |= 0x80;       // b7 = 1
+            }
+
+            if(cpub->ix == 0x00){
+                cpub->zf = 1;               // ZF = 1
+            }
+            cpub->nf = (cpub->ix >> 7) & 1;    // NF = b7
+
             break;
         case '5':
             /* RLA ACC */
+            x = cpub->cf;
+            cpub->cf = (cpub->acc >> 7) & 1; // CF = b7
+
+            cpub->acc = cpub->acc << 1;     // 左シフト
+            if (x == 0) {
+                cpub->acc &= ~0x01;      // b0 = 0
+            } else {
+                cpub->acc |= 0x01;       // b0 = 1
+            }
+
+            if (cpub->cf != cpub->(cpub->acc >> 7) & 1){
+                cpub->vf = 1;               // 異符号ならVF = 1
+            }
+            if(cpub->acc == 0x00){
+                cpub->zf = 1;               // ZF = 1
+            }
+            cpub->nf = (cpub->acc >> 7) & 1;    // NF = b7
+
             break;
         case 'D':
             /* RLA IX */
+            x = cpub->cf;
+            cpub->cf = (cpub->ix >> 7) & 1; // CF = b7
+
+            cpub->ix = cpub->ix << 1;     // 左シフト
+            if (x == 0) {
+                cpub->ix &= ~0x01;      // b0 = 0
+            } else {
+                cpub->ix |= 0x01;       // b0 = 1
+            }
+
+            if (cpub->cf != cpub->(cpub->ix >> 7) & 1){
+                cpub->vf = 1;               // 異符号ならVF = 1
+            }
+            if(cpub->ix == 0x00){
+                cpub->zf = 1;               // ZF = 1
+            }
+            cpub->nf = (cpub->ix >> 7) & 1;    // NF = b7
+
             break;
         case '6':
             /* RRL ACC */
+            cpub->cf = cpub->acc & 1;        // CF = b0
+            cpub->vf = 0;                   // VF = 0
+
+            cpub->acc = cpub->acc >> 1;
+            if (cpub->cf == 0) {
+                cpub->acc &= ~0x80;      // b7 = 0
+            } else {
+                cpub->acc |= 0x80;       // b7 = 1
+            }
+
+            if(cpub->acc == 0x00){
+                cpub->zf = 1;               // ZF = 1
+            }
+            cpub->nf = (cpub->acc >> 7) & 1;    // NF = b7
+
             break;
         case 'E':
             /* RRL IX */
+            cpub->cf = cpub->ix & 1;        // CF = b0
+            cpub->vf = 0;                   // VF = 0
+
+            cpub->ix = cpub->ix >> 1;
+            if (cpub->cf == 0) {
+                cpub->ix &= ~0x80;      // b7 = 0
+            } else {
+                cpub->ix |= 0x80;       // b7 = 1
+            }
+
+            if(cpub->ix == 0x00){
+                cpub->zf = 1;               // ZF = 1
+            }
+            cpub->nf = (cpub->ix >> 7) & 1;    // NF = b7
+
             break;
         case '7':
             /* RLL ACC */
+            cpub->cf = (cpub->acc >> 7) & 1; // CF = b7
+
+            cpub->acc = cpub->acc << 1;     // 左シフト
+            if (cpub->cf == 0) {
+                cpub->acc &= ~0x01;      // b0 = 0
+            } else {
+                cpub->acc |= 0x01;       // b0 = 1
+            }
+
+            if(cpub->acc == 0x00){
+                cpub->zf = 1;               // ZF = 1
+            }
+            cpub->nf = (cpub->acc >> 7) & 1;    // NF = b7
+
             break;
         case 'F':
             /* RLL IX */
+            cpub->cf = (cpub->ix >> 7) & 1; // CF = b7
+
+            cpub->ix = cpub->ix << 1;     // 左シフト
+            if (cpub->cf == 0) {
+                cpub->ix &= ~0x01;      // b0 = 0
+            } else {
+                cpub->ix |= 0x01;       // b0 = 1
+            }
+
+            if(cpub->ix == 0x00){
+                cpub->zf = 1;               // ZF = 1
+            }
+            cpub->nf = (cpub->ix >> 7) & 1;    // NF = b7
+
             break;
     }
 }
