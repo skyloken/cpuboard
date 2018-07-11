@@ -245,25 +245,85 @@ static void Ssm_Rsm(char obj2, Cpub *cpub) {
     switch (obj2) {
         case '0':
             /* SRA ACC */
-            x = (cpub->acc >> 7) & 1; // MSBを取り出す
-            cpub->cf = cpub->acc & 1; // LSBをCFへセット
+
+            x = (cpub->acc >> 7) & 1;   // b7を取り出す
+            cpub->cf = cpub->acc & 1;   // CF = b0
+            cpub->vf = 0;               // VF = 0
+
             cpub->acc = cpub->acc >> 1;
             if (x == 0) {
-                cpub->acc &= ~0x80;
+                cpub->acc &= ~0x80; // b7 = 0
             } else {
-                cpub->acc |= 0x80;
+                cpub->acc |= 0x80;  // b7 = 1
             }
+
+            if(cpub->acc == 0x00){
+                cpub->zf = 1;       // ZF = 1
+            }
+            cpub->nf = (cpub->acc >> 7) & 1;    // NF = b7
             break;
+
         case '8':
             /* SRA IX */
-            x = (cpub->ix >> 7) & 1; // MSBを取り出す
-            cpub->cf = cpub->ix & 1; // LSBをCFへセット
+
+            x = (cpub->ix >> 7) & 1;   // b7を取り出す
+            cpub->cf = cpub->ix & 1;   // CF = b0
+            cpub->vf = 0;               // VF = 0
+
             cpub->ix = cpub->ix >> 1;
             if (x == 0) {
-                cpub->ix &= ~0x80;
+                cpub->ix &= ~0x80; // b7 = 0
             } else {
-                cpub->ix |= 0x80;
+                cpub->ix |= 0x80;  // b7 = 1
             }
+
+            if(cpub->ix == 0x00){
+                cpub->zf = 1;       // ZF = 1
+            }
+            cpub->nf = (cpub->ix >> 7) & 1;    // NF = b7
+            break;
+
+        case '1':
+            /* SLA ACC */
+            break;
+        case '9':
+            /* SLA IX */
+            break;
+        case '2':
+            /* SRL ACC */
+            break;
+        case 'A':
+            /* SRL IX */
+            break;
+        case '3':
+            /* SLL ACC */
+            break;
+        case 'B':
+            /* SLL IX */
+            break;
+        case '4':
+            /* RRA ACC */
+            break;
+        case 'C':
+            /* RRA IX */
+            break;
+        case '5':
+            /* RLA ACC */
+            break;
+        case 'D':
+            /* RLA IX */
+            break;
+        case '6':
+            /* RRL ACC */
+            break;
+        case 'E':
+            /* RRL IX */
+            break;
+        case '7':
+            /* RLL ACC */
+            break;
+        case 'F':
+            /* RLL IX */
             break;
     }
 }
