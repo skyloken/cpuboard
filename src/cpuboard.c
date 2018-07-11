@@ -11,8 +11,10 @@
 #include <stdio.h>
 #include <limits.h>
 
+/* Bbc (谷垣担当分) */
 static void Bbc(char obj2, Cpub *cpub);
 
+/* Ssm, Rsm (谷垣担当分) */
 static void Ssm_Rsm(char obj2, Cpub *cpub);
 
 /*=============================================================================
@@ -108,6 +110,7 @@ int step(Cpub *cpub) {
     return RUN_HALT;
 }
 
+/* Bbc (谷垣担当分) */
 static void Bbc(char obj2, Cpub *cpub) {
     Uword p;
     switch (obj2) {
@@ -240,6 +243,7 @@ static void Bbc(char obj2, Cpub *cpub) {
     }
 }
 
+/* Ssm, Rsm (谷垣担当分) */
 static void Ssm_Rsm(char obj2, Cpub *cpub) {
     Bit x;
     Bit y;
