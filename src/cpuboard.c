@@ -292,9 +292,9 @@ static void Ssm_Rsm(char obj2, Cpub *cpub) {
             cpub->cf = (cpub->acc >> 7) & 1; // CF = b7
 
             cpub->acc = cpub->acc << 1;     // 左シフト
-            cpub->acc &= ~0x80;             // b0 = 0
+            cpub->acc &= ~0x01;             // b0 = 0
 
-            if (cpub->cf != cpub->(cpub->acc >> 7) & 1){
+            if (cpub->cf != ((cpub->acc >> 7) & 1)){
                 cpub->vf = 1;               // 異符号ならVF = 1
             }
             if(cpub->acc == 0x00){
@@ -308,9 +308,9 @@ static void Ssm_Rsm(char obj2, Cpub *cpub) {
             cpub->cf = (cpub->ix >> 7) & 1; // CF = b7
 
             cpub->ix = cpub->ix << 1;     // 左シフト
-            cpub->ix &= ~0x80;             // b0 = 0
+            cpub->ix &= ~0x01;             // b0 = 0
 
-            if (cpub->cf != cpub->(cpub->ix >> 7) & 1){
+            if (cpub->cf != ((cpub->ix >> 7) & 1)){
                 cpub->vf = 1;               // 異符号ならVF = 1
             }
             if(cpub->ix == 0x00){
@@ -336,7 +336,7 @@ static void Ssm_Rsm(char obj2, Cpub *cpub) {
             break;
         case 'A':
             /* SRL IX */
-            cpub->cf = cpub-> & 1;        // CF = b0
+            cpub->cf = cpub->ix & 1;        // CF = b0
             cpub->vf = 0;                   // VF = 0
 
 
@@ -355,7 +355,7 @@ static void Ssm_Rsm(char obj2, Cpub *cpub) {
             cpub->vf = 0;                   // VF = 0
 
             cpub->acc = cpub->acc << 1;     // 左シフト
-            cpub->acc &= ~0x80;             // b0 = 0
+            cpub->acc &= ~0x01;             // b0 = 0
 
             if(cpub->acc == 0x00){
                 cpub->zf = 1;               // ZF = 1
@@ -369,7 +369,7 @@ static void Ssm_Rsm(char obj2, Cpub *cpub) {
             cpub->vf = 0;                   // VF = 0
 
             cpub->ix = cpub->ix << 1;     // 左シフト
-            cpub->ix &= ~0x80;             // b0 = 0
+            cpub->ix &= ~0x01;             // b0 = 0
 
             if(cpub->ix == 0x00){
                 cpub->zf = 1;               // ZF = 1
@@ -427,7 +427,7 @@ static void Ssm_Rsm(char obj2, Cpub *cpub) {
                 cpub->acc |= 0x01;       // b0 = 1
             }
 
-            if (cpub->cf != cpub->(cpub->acc >> 7) & 1){
+            if (cpub->cf != ((cpub->acc >> 7) & 1)){
                 cpub->vf = 1;               // 異符号ならVF = 1
             }
             if(cpub->acc == 0x00){
@@ -448,7 +448,7 @@ static void Ssm_Rsm(char obj2, Cpub *cpub) {
                 cpub->ix |= 0x01;       // b0 = 1
             }
 
-            if (cpub->cf != cpub->(cpub->ix >> 7) & 1){
+            if (cpub->cf != ((cpub->ix >> 7) & 1)){
                 cpub->vf = 1;               // 異符号ならVF = 1
             }
             if(cpub->ix == 0x00){
