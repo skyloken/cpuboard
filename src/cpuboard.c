@@ -35,11 +35,23 @@ int step(Cpub *cpub) {
 
     cpub->pc++;
 
+    Uword p;
     switch (obj1) {
         case '0':
             switch (obj2) {
                 case '0':
                     /* NOP(何もしない) */
+                    return RUN_STEP;
+                case 'A':
+                    /* JAL */
+                    p = cpub->pc;
+                    cpub->pc++;
+                    cpub->acc = cpub->pc;
+                    cpub->pc = cpub->mem[p];
+                    return RUN_STEP;
+                case 'B':
+                    /* JR */
+                    cpub->pc = cpub->acc;
                     return RUN_STEP;
                 case 'F':
                     /* HLT(停止) */
@@ -83,27 +95,35 @@ int step(Cpub *cpub) {
             Ssm_Rsm(obj2, cpub);
             return RUN_STEP;
 
-        case '5':
-            return RUN_STEP;
         case '6':
+            LD(obj2, cpub);
             return RUN_STEP;
         case '7':
+            ST(obj2, cpub);
             return RUN_STEP;
         case '8':
+            SBC(obj2, cpub);
             return RUN_STEP;
         case '9':
+            ADC(obj2, cpub);
             return RUN_STEP;
         case 'A':
+            SUB(obj2, cpub);
             return RUN_STEP;
         case 'B':
+            ADD(obj2, cpub);
             return RUN_STEP;
         case 'C':
+            EOR(obj2, cpub);
             return RUN_STEP;
         case 'D':
+            OR(obj2, cpub);
             return RUN_STEP;
         case 'E':
+            AND(obj2, cpub);
             return RUN_STEP;
         case 'F':
+            CMP(obj2, cpub);
             return RUN_STEP;
     }
 
@@ -263,8 +283,10 @@ static void Ssm_Rsm(char obj2, Cpub *cpub) {
                 cpub->acc |= 0x80;      // b7 = 1
             }
 
-            if(cpub->acc == 0x00){
+            if (cpub->acc == 0x00) {
                 cpub->zf = 1;           // ZF = 1
+            } else {
+                cpub->zf = 0;
             }
             cpub->nf = (cpub->acc >> 7) & 1;    // NF = b7
 
@@ -284,8 +306,10 @@ static void Ssm_Rsm(char obj2, Cpub *cpub) {
                 cpub->ix |= 0x80;       // b7 = 1
             }
 
-            if(cpub->ix == 0x00){
+            if (cpub->ix == 0x00) {
                 cpub->zf = 1;           // ZF = 1
+            } else {
+                cpub->zf = 0;
             }
             cpub->nf = (cpub->ix >> 7) & 1;    // NF = b7
 
@@ -298,11 +322,13 @@ static void Ssm_Rsm(char obj2, Cpub *cpub) {
             cpub->acc = cpub->acc << 1;     // 左シフト
             cpub->acc &= ~0x01;             // b0 = 0
 
-            if (cpub->cf != ((cpub->acc >> 7) & 1)){
+            if (cpub->cf != ((cpub->acc >> 7) & 1)) {
                 cpub->vf = 1;               // 異符号ならVF = 1
             }
-            if(cpub->acc == 0x00){
-                cpub->zf = 1;               // ZF = 1
+            if (cpub->acc == 0x00) {
+                cpub->zf = 1;           // ZF = 1
+            } else {
+                cpub->zf = 0;
             }
             cpub->nf = (cpub->acc >> 7) & 1;    // NF = b7
 
@@ -314,11 +340,13 @@ static void Ssm_Rsm(char obj2, Cpub *cpub) {
             cpub->ix = cpub->ix << 1;     // 左シフト
             cpub->ix &= ~0x01;             // b0 = 0
 
-            if (cpub->cf != ((cpub->ix >> 7) & 1)){
+            if (cpub->cf != ((cpub->ix >> 7) & 1)) {
                 cpub->vf = 1;               // 異符号ならVF = 1
             }
-            if(cpub->ix == 0x00){
-                cpub->zf = 1;               // ZF = 1
+            if (cpub->ix == 0x00) {
+                cpub->zf = 1;           // ZF = 1
+            } else {
+                cpub->zf = 0;
             }
             cpub->nf = (cpub->ix >> 7) & 1;    // NF = b7
 
@@ -332,8 +360,10 @@ static void Ssm_Rsm(char obj2, Cpub *cpub) {
             cpub->acc = cpub->acc >> 1;     // 右シフト
             cpub->acc &= ~0x80;             // b7 = 0
 
-            if(cpub->acc == 0x00){
-                cpub->zf = 1;               // ZF = 1
+            if (cpub->acc == 0x00) {
+                cpub->zf = 1;           // ZF = 1
+            } else {
+                cpub->zf = 0;
             }
             cpub->nf = (cpub->acc >> 7) & 1;    // NF = b7
 
@@ -347,8 +377,10 @@ static void Ssm_Rsm(char obj2, Cpub *cpub) {
             cpub->ix = cpub->ix >> 1;     // 右シフト
             cpub->ix &= ~0x80;             // b7 = 0
 
-            if(cpub->ix == 0x00){
-                cpub->zf = 1;               // ZF = 1
+            if (cpub->ix == 0x00) {
+                cpub->zf = 1;           // ZF = 1
+            } else {
+                cpub->zf = 0;
             }
             cpub->nf = (cpub->ix >> 7) & 1;    // NF = b7
 
@@ -361,8 +393,10 @@ static void Ssm_Rsm(char obj2, Cpub *cpub) {
             cpub->acc = cpub->acc << 1;     // 左シフト
             cpub->acc &= ~0x01;             // b0 = 0
 
-            if(cpub->acc == 0x00){
-                cpub->zf = 1;               // ZF = 1
+            if (cpub->acc == 0x00) {
+                cpub->zf = 1;           // ZF = 1
+            } else {
+                cpub->zf = 0;
             }
             cpub->nf = (cpub->acc >> 7) & 1;    // NF = b7
 
@@ -375,8 +409,10 @@ static void Ssm_Rsm(char obj2, Cpub *cpub) {
             cpub->ix = cpub->ix << 1;     // 左シフト
             cpub->ix &= ~0x01;             // b0 = 0
 
-            if(cpub->ix == 0x00){
-                cpub->zf = 1;               // ZF = 1
+            if (cpub->ix == 0x00) {
+                cpub->zf = 1;           // ZF = 1
+            } else {
+                cpub->zf = 0;
             }
             cpub->nf = (cpub->ix >> 7) & 1;    // NF = b7
 
@@ -394,8 +430,10 @@ static void Ssm_Rsm(char obj2, Cpub *cpub) {
                 cpub->acc |= 0x80;       // b7 = 1
             }
 
-            if(cpub->acc == 0x00){
-                cpub->zf = 1;               // ZF = 1
+            if (cpub->acc == 0x00) {
+                cpub->zf = 1;           // ZF = 1
+            } else {
+                cpub->zf = 0;
             }
             cpub->nf = (cpub->acc >> 7) & 1;    // NF = b7
 
@@ -413,8 +451,10 @@ static void Ssm_Rsm(char obj2, Cpub *cpub) {
                 cpub->ix |= 0x80;       // b7 = 1
             }
 
-            if(cpub->ix == 0x00){
-                cpub->zf = 1;               // ZF = 1
+            if (cpub->ix == 0x00) {
+                cpub->zf = 1;           // ZF = 1
+            } else {
+                cpub->zf = 0;
             }
             cpub->nf = (cpub->ix >> 7) & 1;    // NF = b7
 
@@ -431,11 +471,13 @@ static void Ssm_Rsm(char obj2, Cpub *cpub) {
                 cpub->acc |= 0x01;       // b0 = 1
             }
 
-            if (cpub->cf != ((cpub->acc >> 7) & 1)){
+            if (cpub->cf != ((cpub->acc >> 7) & 1)) {
                 cpub->vf = 1;               // 異符号ならVF = 1
             }
-            if(cpub->acc == 0x00){
-                cpub->zf = 1;               // ZF = 1
+            if (cpub->acc == 0x00) {
+                cpub->zf = 1;           // ZF = 1
+            } else {
+                cpub->zf = 0;
             }
             cpub->nf = (cpub->acc >> 7) & 1;    // NF = b7
 
@@ -452,11 +494,13 @@ static void Ssm_Rsm(char obj2, Cpub *cpub) {
                 cpub->ix |= 0x01;       // b0 = 1
             }
 
-            if (cpub->cf != ((cpub->ix >> 7) & 1)){
+            if (cpub->cf != ((cpub->ix >> 7) & 1)) {
                 cpub->vf = 1;               // 異符号ならVF = 1
             }
-            if(cpub->ix == 0x00){
-                cpub->zf = 1;               // ZF = 1
+            if (cpub->ix == 0x00) {
+                cpub->zf = 1;           // ZF = 1
+            } else {
+                cpub->zf = 0;
             }
             cpub->nf = (cpub->ix >> 7) & 1;    // NF = b7
 
@@ -473,8 +517,10 @@ static void Ssm_Rsm(char obj2, Cpub *cpub) {
                 cpub->acc |= 0x80;       // b7 = 1
             }
 
-            if(cpub->acc == 0x00){
-                cpub->zf = 1;               // ZF = 1
+            if (cpub->acc == 0x00) {
+                cpub->zf = 1;           // ZF = 1
+            } else {
+                cpub->zf = 0;
             }
             cpub->nf = (cpub->acc >> 7) & 1;    // NF = b7
 
@@ -491,8 +537,10 @@ static void Ssm_Rsm(char obj2, Cpub *cpub) {
                 cpub->ix |= 0x80;       // b7 = 1
             }
 
-            if(cpub->ix == 0x00){
-                cpub->zf = 1;               // ZF = 1
+            if (cpub->ix == 0x00) {
+                cpub->zf = 1;           // ZF = 1
+            } else {
+                cpub->zf = 0;
             }
             cpub->nf = (cpub->ix >> 7) & 1;    // NF = b7
 
@@ -508,8 +556,10 @@ static void Ssm_Rsm(char obj2, Cpub *cpub) {
                 cpub->acc |= 0x01;       // b0 = 1
             }
 
-            if(cpub->acc == 0x00){
-                cpub->zf = 1;               // ZF = 1
+            if (cpub->acc == 0x00) {
+                cpub->zf = 1;           // ZF = 1
+            } else {
+                cpub->zf = 0;
             }
             cpub->nf = (cpub->acc >> 7) & 1;    // NF = b7
 
@@ -525,8 +575,10 @@ static void Ssm_Rsm(char obj2, Cpub *cpub) {
                 cpub->ix |= 0x01;       // b0 = 1
             }
 
-            if(cpub->ix == 0x00){
-                cpub->zf = 1;               // ZF = 1
+            if (cpub->ix == 0x00) {
+                cpub->zf = 1;           // ZF = 1
+            } else {
+                cpub->zf = 0;
             }
             cpub->nf = (cpub->ix >> 7) & 1;    // NF = b7
 
