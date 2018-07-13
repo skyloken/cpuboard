@@ -46,14 +46,23 @@ typedef struct cpuboard {
 
 int step(Cpub *);
 
-void LD(char obj2,Cpub *cpub);
+void LD(char obj2, Cpub *cpub);
+
 void ST(char obj2, Cpub *cpub);
+
 void ADD(char obj2, Cpub *cpub);
+
 void ADC(char obj2, Cpub *cpub);
+
 void SUB(char obj2, Cpub *cpub);
+
 void SBC(char obj2, Cpub *cpub);
+
 void CMP(char obj2, Cpub *cpub);
+
 void AND(char obj2, Cpub *cpub);
+
 void OR(char obj2, Cpub *cpub);
+
 void EOR(char obj2, Cpub *cpub);
 

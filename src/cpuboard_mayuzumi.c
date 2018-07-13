@@ -20,6 +20,9 @@ void LD(char obj2, Cpub *cpub) {
             cpub->acc = cpub->ix;
             break;
         case '2':
+            cpub->acc = cpub->mem[cpub->pc];
+            cpub->pc++;
+            break;
         case '4':
             obj = cpub->mem[cpub->pc];//2語目のアドレスを取得
             cpub->pc++;
@@ -47,6 +50,9 @@ void LD(char obj2, Cpub *cpub) {
             cpub->ix = cpub->ix;
             break;
         case 'A':
+            cpub->ix = cpub->mem[cpub->pc];
+            cpub->pc++;
+            break;
         case 'C':
             obj = cpub->mem[cpub->pc];//2語目のアドレスを取得
             cpub->pc++;
@@ -128,6 +134,13 @@ void ADD(char obj2, Cpub *cpub) {
             break;
 
         case '2':
+            A = (cpub->acc >> 7) & 1;
+            B = (cpub->mem[cpub->pc] >> 7) & 1;
+            cpub->acc = cpub->acc + cpub->mem[cpub->pc];
+            C = (cpub->acc >> 7) & 1;
+            cpub->pc++;
+            is_acc++;
+            break;
         case '4':
             obj = cpub->mem[cpub->pc]; //2語目のアドレスを取得
             A = (cpub->acc >> 7) & 1;
@@ -180,6 +193,13 @@ void ADD(char obj2, Cpub *cpub) {
             is_ix++;
             break;
         case 'A':
+            A = (cpub->ix >> 7) & 1;
+            B = (cpub->mem[cpub->pc] >> 7) & 1;
+            cpub->ix = cpub->ix + cpub->mem[cpub->pc];
+            C = (cpub->ix >> 7) & 1;
+            cpub->pc++;
+            is_ix++;
+            break;
         case 'C':
             obj = cpub->mem[cpub->pc]; //2語目のアドレスを取得
             A = (cpub->ix >> 7) & 1;
@@ -223,8 +243,7 @@ void ADD(char obj2, Cpub *cpub) {
         if (cpub->acc == 0x00)//ZF
         {
             cpub->zf = 1;
-        }
-        else {
+        } else {
             cpub->zf = 0;
         }
     } else if (is_ix == 1) {
@@ -232,7 +251,7 @@ void ADD(char obj2, Cpub *cpub) {
         if (cpub->ix == 0x00)//ZF
         {
             cpub->zf = 1;
-        }else {
+        } else {
             cpub->zf = 0;
         }
     }
@@ -261,6 +280,13 @@ void ADC(char obj2, Cpub *cpub) {
             break;
 
         case '2':
+            A = (cpub->acc >> 7) & 1;
+            B = (cpub->mem[cpub->pc] >> 7) & 1;
+            cpub->acc = cpub->acc + cpub->mem[cpub->pc] + cpub->cf;
+            C = (cpub->acc >> 7) & 1;
+            cpub->pc++;
+            is_acc++;
+            break;
         case '4':
             obj = cpub->mem[cpub->pc]; //2語目のアドレスを取得
             A = (cpub->acc >> 7) & 1;
@@ -313,6 +339,13 @@ void ADC(char obj2, Cpub *cpub) {
             is_ix++;
             break;
         case 'A':
+            A = (cpub->ix >> 7) & 1;
+            B = (cpub->mem[cpub->pc] >> 7) & 1;
+            cpub->ix = cpub->ix + cpub->mem[cpub->pc] + cpub->cf;
+            C = (cpub->ix >> 7) & 1;
+            cpub->pc++;
+            is_ix++;
+            break;
         case 'C':
             obj = cpub->mem[cpub->pc]; //2語目のアドレスを取得
             A = (cpub->ix >> 7) & 1;
@@ -356,7 +389,7 @@ void ADC(char obj2, Cpub *cpub) {
         if (cpub->acc == 0x00)                     //ZF
         {
             cpub->zf = 1;
-        }else {
+        } else {
             cpub->zf = 0;
         }
     } else if (is_ix == 1) {
@@ -364,7 +397,7 @@ void ADC(char obj2, Cpub *cpub) {
         if (cpub->ix == 0x00)                        //ZF
         {
             cpub->zf = 1;
-        }else {
+        } else {
             cpub->zf = 0;
         }
     }
@@ -394,6 +427,13 @@ void SUB(char obj2, Cpub *cpub) {
             break;
 
         case '2':
+            A = (cpub->acc >> 7) & 1;
+            B = (cpub->mem[cpub->pc] >> 7) & 1;
+            cpub->acc = cpub->acc - cpub->mem[cpub->pc];
+            C = (cpub->acc >> 7) & 1;
+            cpub->pc++;
+            is_acc++;
+            break;
         case '4':
             obj = cpub->mem[cpub->pc]; //2語目のアドレスを取得
             A = (cpub->acc >> 7) & 1;
@@ -446,6 +486,13 @@ void SUB(char obj2, Cpub *cpub) {
             is_ix++;
             break;
         case 'A':
+            A = (cpub->ix >> 7) & 1;
+            B = (cpub->mem[cpub->pc] >> 7) & 1;
+            cpub->ix = cpub->ix - cpub->mem[cpub->pc];
+            C = (cpub->ix >> 7) & 1;
+            cpub->pc++;
+            is_ix++;
+            break;
         case 'C':
             obj = cpub->mem[cpub->pc]; //2語目のアドレスを取得
             A = (cpub->ix >> 7) & 1;
@@ -489,7 +536,7 @@ void SUB(char obj2, Cpub *cpub) {
         if (cpub->acc == 0x00)                     //ZF
         {
             cpub->zf = 1;
-        }else {
+        } else {
             cpub->zf = 0;
         }
     } else if (is_ix == 1) {
@@ -497,7 +544,7 @@ void SUB(char obj2, Cpub *cpub) {
         if (cpub->ix == 0x00)                        //ZF
         {
             cpub->zf = 1;
-        }else {
+        } else {
             cpub->zf = 0;
         }
     }
@@ -526,6 +573,13 @@ void SBC(char obj2, Cpub *cpub) {
             break;
 
         case '2':
+            A = (cpub->acc >> 7) & 1;
+            B = (cpub->mem[cpub->pc] >> 7) & 1;
+            cpub->acc = cpub->acc - cpub->mem[cpub->pc] - cpub->cf;
+            C = (cpub->acc >> 7) & 1;
+            cpub->pc++;
+            is_acc++;
+            break;
         case '4':
             obj = cpub->mem[cpub->pc]; //2語目のアドレスを取得
             A = (cpub->acc >> 7) & 1;
@@ -578,6 +632,13 @@ void SBC(char obj2, Cpub *cpub) {
             is_ix++;
             break;
         case 'A':
+            A = (cpub->ix >> 7) & 1;
+            B = (cpub->mem[cpub->pc] >> 7) & 1;
+            cpub->ix = cpub->ix - cpub->mem[cpub->pc] - cpub->cf;
+            C = (cpub->ix >> 7) & 1;
+            cpub->pc++;
+            is_ix++;
+            break;
         case 'C':
             obj = cpub->mem[cpub->pc]; //2語目のアドレスを取得
             A = (cpub->ix >> 7) & 1;
@@ -621,7 +682,7 @@ void SBC(char obj2, Cpub *cpub) {
         if (cpub->acc == 0x00)                     //ZF
         {
             cpub->zf = 1;
-        }else {
+        } else {
             cpub->zf = 0;
         }
     } else if (is_ix == 1) {
@@ -629,7 +690,7 @@ void SBC(char obj2, Cpub *cpub) {
         if (cpub->ix == 0x00)                        //ZF
         {
             cpub->zf = 1;
-        }else {
+        } else {
             cpub->zf = 0;
         }
     }
@@ -660,6 +721,13 @@ void CMP(char obj2, Cpub *cpub) {
             break;
 
         case '2':
+            A = (cpub->acc >> 7) & 1;
+            B = (cpub->mem[cpub->pc] >> 7) & 1;
+            tmp = cpub->acc - cpub->mem[cpub->pc];
+            C = (cpub->acc >> 7) & 1;
+            cpub->pc++;
+            is_acc++;
+            break;
         case '4':
             obj = cpub->mem[cpub->pc]; //2語目のアドレスを取得
             A = (cpub->acc >> 7) & 1;
@@ -712,6 +780,13 @@ void CMP(char obj2, Cpub *cpub) {
             is_ix++;
             break;
         case 'A':
+            A = (cpub->ix >> 7) & 1;
+            B = (cpub->mem[cpub->pc] >> 7) & 1;
+            tmp = cpub->ix - cpub->mem[cpub->pc];
+            C = (cpub->ix >> 7) & 1;
+            cpub->pc++;
+            is_ix++;
+            break;
         case 'C':
             obj = cpub->mem[cpub->pc]; //2語目のアドレスを取得
             A = (cpub->ix >> 7) & 1;
@@ -755,7 +830,7 @@ void CMP(char obj2, Cpub *cpub) {
         if (tmp == 0x00)                     //ZF
         {
             cpub->zf = 1;
-        }else {
+        } else {
             cpub->zf = 0;
         }
     } else if (is_ix == 1) {
@@ -763,7 +838,7 @@ void CMP(char obj2, Cpub *cpub) {
         if (tmp == 0x00)                        //ZF
         {
             cpub->zf = 1;
-        }else {
+        } else {
             cpub->zf = 0;
         }
     }
@@ -794,6 +869,13 @@ void AND(char obj2, Cpub *cpub) {
             break;
 
         case '2':
+            A = (cpub->acc >> 7) & 1;
+            B = (cpub->mem[cpub->pc] >> 7) & 1;
+            cpub->acc = cpub->acc & cpub->mem[cpub->pc];
+            C = (cpub->acc >> 7) & 1;
+            cpub->pc++;
+            is_acc++;
+            break;
         case '4':
             obj = cpub->mem[cpub->pc]; //2語目のアドレスを取得
             A = (cpub->acc >> 7) & 1;
@@ -846,6 +928,13 @@ void AND(char obj2, Cpub *cpub) {
             is_ix++;
             break;
         case 'A':
+            A = (cpub->ix >> 7) & 1;
+            B = (cpub->mem[cpub->pc] >> 7) & 1;
+            cpub->ix = cpub->ix & cpub->mem[cpub->pc];
+            C = (cpub->ix >> 7) & 1;
+            cpub->pc++;
+            is_ix++;
+            break;
         case 'C':
             obj = cpub->mem[cpub->pc]; //2語目のアドレスを取得
             A = (cpub->ix >> 7) & 1;
@@ -889,7 +978,7 @@ void AND(char obj2, Cpub *cpub) {
         if (cpub->acc == 0x00)                     //ZF
         {
             cpub->zf = 1;
-        }else {
+        } else {
             cpub->zf = 0;
         }
     } else if (is_ix == 1) {
@@ -897,7 +986,7 @@ void AND(char obj2, Cpub *cpub) {
         if (cpub->ix == 0x00)                        //ZF
         {
             cpub->zf = 1;
-        }else {
+        } else {
             cpub->zf = 0;
         }
     }
@@ -928,6 +1017,13 @@ void OR(char obj2, Cpub *cpub) {
             break;
 
         case '2':
+            A = (cpub->acc >> 7) & 1;
+            B = (cpub->mem[cpub->pc] >> 7) & 1;
+            cpub->acc = cpub->acc | cpub->mem[cpub->pc];
+            C = (cpub->acc >> 7) & 1;
+            cpub->pc++;
+            is_acc++;
+            break;
         case '4':
             obj = cpub->mem[cpub->pc]; //2語目のアドレスを取得
             A = (cpub->acc >> 7) & 1;
@@ -980,6 +1076,13 @@ void OR(char obj2, Cpub *cpub) {
             is_ix++;
             break;
         case 'A':
+            A = (cpub->ix >> 7) & 1;
+            B = (cpub->mem[cpub->pc] >> 7) & 1;
+            cpub->ix = cpub->ix | cpub->mem[cpub->pc];
+            C = (cpub->ix >> 7) & 1;
+            cpub->pc++;
+            is_ix++;
+            break;
         case 'C':
             obj = cpub->mem[cpub->pc]; //2語目のアドレスを取得
             A = (cpub->ix >> 7) & 1;
@@ -1023,7 +1126,7 @@ void OR(char obj2, Cpub *cpub) {
         if (cpub->acc == 0x00)                     //ZF
         {
             cpub->zf = 1;
-        }else {
+        } else {
             cpub->zf = 0;
         }
     } else if (is_ix == 1) {
@@ -1031,7 +1134,7 @@ void OR(char obj2, Cpub *cpub) {
         if (cpub->ix == 0x00)                        //ZF
         {
             cpub->zf = 1;
-        }else {
+        } else {
             cpub->zf = 0;
         }
     }
@@ -1062,6 +1165,13 @@ void EOR(char obj2, Cpub *cpub) {
             break;
 
         case '2':
+            A = (cpub->acc >> 7) & 1;
+            B = (cpub->mem[cpub->pc] >> 7) & 1;
+            cpub->acc = cpub->acc ^ cpub->mem[cpub->pc];
+            C = (cpub->acc >> 7) & 1;
+            cpub->pc++;
+            is_acc++;
+            break;
         case '4':
             obj = cpub->mem[cpub->pc]; //2語目のアドレスを取得
             A = (cpub->acc >> 7) & 1;
@@ -1114,6 +1224,13 @@ void EOR(char obj2, Cpub *cpub) {
             is_ix++;
             break;
         case 'A':
+            A = (cpub->ix >> 7) & 1;
+            B = (cpub->mem[cpub->pc] >> 7) & 1;
+            cpub->ix = cpub->ix ^ cpub->mem[cpub->pc];
+            C = (cpub->ix >> 7) & 1;
+            cpub->pc++;
+            is_ix++;
+            break;
         case 'C':
             obj = cpub->mem[cpub->pc]; //2語目のアドレスを取得
             A = (cpub->ix >> 7) & 1;
@@ -1157,7 +1274,7 @@ void EOR(char obj2, Cpub *cpub) {
         if (cpub->acc == 0x00)                     //ZF
         {
             cpub->zf = 1;
-        }else {
+        } else {
             cpub->zf = 0;
         }
     } else if (is_ix == 1) {
@@ -1165,7 +1282,7 @@ void EOR(char obj2, Cpub *cpub) {
         if (cpub->ix == 0x00)                        //ZF
         {
             cpub->zf = 1;
-        }else {
+        } else {
             cpub->zf = 0;
         }
     }
