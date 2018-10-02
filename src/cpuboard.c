@@ -58,10 +58,12 @@ int step(Cpub *cpub) {
                 case '0':
                     /* OUT */
                     cpub->obuf.buf = cpub->acc;
+                    cpub->obuf.flag = 1;
                     return RUN_STEP;
                 case 'F':
                     /* IN */
                     cpub->acc = cpub->ibuf->buf;
+                    cpub->ibuf->flag = 0;
                     return RUN_STEP;
             }
             break;
